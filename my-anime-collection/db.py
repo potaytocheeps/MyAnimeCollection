@@ -33,3 +33,22 @@ def close_database(e=None):
 
     if database is not None:
         database.close()
+
+
+def initialize_database():
+    """Clear all existing data in database and create new tables."""
+
+    # Get connection to database
+    database = get_database()
+
+    # Execute commands in "schema.sql" to create new database
+    with current_app.open_resource("schema.sql") as file:
+        database.executescript(file.read().decode("utf8"))
+
+
+@click.command("initialize-database")
+def initialize_database_command():
+    """Create command line command to initialize the database."""
+
+    initialize_database()
+    click.echo("Initialized the database.")
