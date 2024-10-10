@@ -29,4 +29,8 @@ def create_app(test_config=None):
     except OSError:
         pass
 
+    # Import initialize_app() to register database functions with application instance
+    from . import db
+    db.initialize_app(app)
+
     return app

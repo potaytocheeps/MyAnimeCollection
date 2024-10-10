@@ -52,3 +52,12 @@ def initialize_database_command():
 
     initialize_database()
     click.echo("Initialized the database.")
+
+
+def initialize_app(app):
+    """Register database functions with application instance."""
+
+    # Tell Flask to call close_database() when cleaning up after returning a response
+    app.teardown_appcontext(close_database)
+    # Add new command that can be called with the "flask" command
+    app.cli.add_command(initialize_database_command)
