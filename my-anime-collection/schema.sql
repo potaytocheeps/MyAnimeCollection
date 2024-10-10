@@ -16,7 +16,7 @@ CREATE TABLE anime_shows (
 );
 
 CREATE TABLE anime_releases (
-    id INTEGER NOT NULL,
+    id INTEGER PRIMARY KEY,
     anime_id INTEGER NOT NULL,
     disc_type TEXT NOT NULL,
     edition TEXT NOT NULL DEFAULT "Standard",
