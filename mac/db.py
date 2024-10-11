@@ -1,3 +1,6 @@
+# Database set up taken directly from:
+# https://flask.palletsprojects.com/en/3.0.x/tutorial/database/
+
 import sqlite3
 
 import click

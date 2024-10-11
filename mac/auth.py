@@ -1,3 +1,6 @@
+# Authentication blueprint and views set up taken directly from:
+# https://flask.palletsprojects.com/en/3.0.x/tutorial/views/
+
 import functools
 
 from flask import (
