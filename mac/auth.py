@@ -23,6 +23,7 @@ def register():
         # Get user data submission
         username = request.form.get("username")
         password = request.form.get("password")
+        password_confirmation = request.form.get("password-confirmation")
 
         # Get connection to database
         database = get_database()
@@ -35,6 +36,12 @@ def register():
             error = "Username is required."
         elif not password:
             error = "Password is required."
+        elif not password_confirmation:
+            error = "Password confirmation is required."
+
+        # Ensure that password and its confirmation match
+        if password != password_confirmation:
+            error = "Password and its confirmation do not match."
 
         # If user submitted data successfully, register the user in the database
         if error is None:
