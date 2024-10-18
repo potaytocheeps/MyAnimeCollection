@@ -61,3 +61,42 @@ def register():
 
     # Render registration form
     return render_template("auth/register.html")
+
+
+@blueprint.route("/login", methods=["GET", "POST"])
+def login():
+    """Log in registered user by adding their id to the session."""
+
+    # User reached this view via submitting a form
+    if request.method == "POST":
+        # Get user data submission
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        # Get connection to database
+        database = get_database()
+
+        # Track any errors that may occur during user log in
+        error = None
+
+        # Get user data from the database, based on submitted username
+        user = database.execute("SELECT *"
+                                "FROM users"
+                                "WHERE username = ?",
+                                [username]).fetchone()
+
+        # Check that username exists and password is correct
+        if user is None or not check_password_hash(user["password"], password):
+            error = "Username or password is incorrect."
+
+        # Create new user session on successful login and return to index page
+        if error is None:
+            session.clear()
+            session["user_id"] = user["id"]
+            return redirect(url_for("index"))
+
+        # Store any errors that may have occurred during log in
+        flash(error)
+
+    # Display login form for a GET request
+    return render_template("auth.login.html")
