@@ -14,6 +14,22 @@ from mac.db import get_database
 blueprint = Blueprint("auth", __name__, url_prefix="/auth")
 
 
+@blueprint.before_app_request
+def load_logged_in_user():
+    """If user's id is stored in session, load user object from database
+    into ``g.user``."""
+
+    user_id = session.get("user_id")
+
+    if user_id is None:
+        g.user = None
+    else:
+        g.user = get_database().execute(
+            "SELECT * FROM users WHERE id = ?",
+            [user_id]
+        ).fetchone()
+
+
 @blueprint.route("/register", methods=["GET", "POST"])
 def register():
     """Registers users in database."""
