@@ -30,6 +30,22 @@ def load_logged_in_user():
         ).fetchone()
 
 
+def login_required(view):
+    """View decorator that requires users to be logged in to access the views
+    to which this decorator is applied."""
+
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        # Redirect to login view if user is not logged in
+        if g.user is None:
+            return redirect(url_for("auth.login"))
+
+        # Continue to request view normally
+        return view(**kwargs)
+
+    return wrapped_view
+
+
 @blueprint.route("/register", methods=["GET", "POST"])
 def register():
     """Registers users in database."""
