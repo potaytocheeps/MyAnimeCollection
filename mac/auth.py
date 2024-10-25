@@ -116,3 +116,11 @@ def login():
 
     # Display login form for a GET request
     return render_template("auth.login.html")
+
+
+@blueprint.route("/logout")
+def logout():
+    """Log user out by removing their id from session."""
+
+    session.clear()
+    return redirect(url_for("index"))
