@@ -113,8 +113,8 @@ def login():
 
         # Get user data from the database, based on submitted username
         user = database.execute("SELECT *"
-                                "FROM users"
-                                "WHERE username = ?",
+                                " FROM users"
+                                " WHERE username = ?",
                                 [username]).fetchone()
 
         # Check that username exists and password is correct
@@ -131,7 +131,7 @@ def login():
         flash(error)
 
     # Display login form for a GET request
-    return render_template("auth.login.html")
+    return render_template("auth/login.html")
 
 
 @blueprint.route("/logout")
