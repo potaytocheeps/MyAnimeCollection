@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block header %}
+  <h1>{% block title %}My Collection{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  {% if message %}
+    <p>{{ message }}</p>
+  {% else %}
+    <ul>
+      {% for show in collection %}
+        <li>{{ show["title"] }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endblock %}
