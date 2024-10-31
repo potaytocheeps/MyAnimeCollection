@@ -5,6 +5,7 @@ import sqlite3
 
 import click
 from flask import current_app, g
+import xml.etree.ElementTree as ET
 
 
 def get_database():
@@ -48,6 +49,9 @@ def initialize_database():
     with current_app.open_resource("schema.sql") as file:
         database.executescript(file.read().decode("utf8"))
 
+    # Import anime data from AnimeNewsNetwork
+    import_xml(database)
+
 
 @click.command("initialize-database")
 def initialize_database_command():
@@ -64,3 +68,26 @@ def initialize_app(app):
     app.teardown_appcontext(close_database)
     # Add new command that can be called with the "flask" command
     app.cli.add_command(initialize_database_command)
+
+
+def import_xml(database):
+    """Import anime data from anime-reports.xml obtained from the AnimeNewsNetwork's API:
+    https://www.animenewsnetwork.com/encyclopedia/api.php
+    """
+
+    # Parse XML document to get a tree of its elements, and then get the root element
+    tree = ET.parse("./instance/anime-reports.xml")
+    root = tree.getroot()
+
+    # Iterate over each individual anime's data in the XML document
+    for anime in root.findall("item"):
+        title = anime.find("name").text
+        type = anime.find("type").text
+        id = anime.find("id").text
+        precision = anime.find("precision").text
+
+        # Insert anime's data into the anime_shows table in the database
+        database.execute("INSERT INTO anime_shows (id, title, type, precision)"
+                         " VALUES (?, ?, ?, ?)",
+                         [id, title, type, precision])
+        database.commit()

@@ -12,7 +12,8 @@ CREATE TABLE users (
 CREATE TABLE anime_shows (
     id INTEGER PRIMARY KEY,
     title TEXT NOT NULL,
-    type TEXT NOT NULL
+    type TEXT NOT NULL,
+    precision TEXT NOT NULL
 );
 
 CREATE TABLE anime_releases (
