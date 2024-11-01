@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block header %}
+  <h1>{% block title %}Search Result{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <ul>
+    {% for anime in anime_list %}
+      <li>
+        {{ anime["title"] }} ({{ anime["precision"] }})
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

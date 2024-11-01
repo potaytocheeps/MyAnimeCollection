@@ -35,3 +35,35 @@ def index():
                    "you add some shows to your collection!")
 
     return render_template("collection/index.html", message=message, collection=collection)
+
+
+@blueprint.route("/search", methods=["GET", "POST"])
+@login_required
+def search():
+    """Allow user to search the database for an anime by its title."""
+
+    # User reached this view via a POST request
+    if request.method == "POST":
+        # Get user data submission
+        title = request.form.get("title")
+
+        # Get connection to database
+        database = get_database()
+
+        # Keep track of any errors that may occur
+        error = None
+
+        # Search if title is in the anime_shows table of the database
+        anime_list = database.execute("SELECT * FROM anime_shows WHERE title LIKE ?",
+                                      ["%" + title + "%"]).fetchall()
+
+        # Check that title matches any shows in database
+        if not anime_list:
+            error = "No anime matches that name."
+
+        if error is None:
+            return render_template("collection/searched.html", anime_list=anime_list)
+
+        flash(error)
+
+    return render_template("collection/search.html")
