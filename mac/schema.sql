@@ -17,12 +17,14 @@ CREATE TABLE anime_shows (
 );
 
 CREATE TABLE anime_releases (
-    id INTEGER PRIMARY KEY,
+    release_id INTEGER NOT NULL,
     anime_id INTEGER NOT NULL,
+    release_title TEXT NOT NULL,
     disc_type TEXT NOT NULL,
     edition TEXT NOT NULL DEFAULT "Standard",
-    release_date TIMESTAMP NOT NULL,
+    release_date TEXT NOT NULL,
     FOREIGN KEY (anime_id) REFERENCES anime_shows (id)
+    PRIMARY KEY (release_id, anime_id)
 );
 
 CREATE TABLE anime_collections (
