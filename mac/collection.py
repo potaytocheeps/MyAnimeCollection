@@ -21,15 +21,30 @@ def index():
     # Get connection to database
     database = get_database()
 
-    # Get list of titles of shows that the user has added to their collection
-    collection = database.execute("SELECT title "
-                                  "FROM anime_shows "
-                                  "WHERE id in ("
+    # Get list of release titles and ids of shows that the user has added to their collection
+    collection = database.execute("SELECT release_title, release_id "
+                                  "FROM anime_releases "
+                                  "WHERE release_id in ("
+                                  "    SELECT release_id"
+                                  "    FROM anime_collections"
+                                  "    WHERE user_id = ?"
+                                  ") AND anime_id in ("
                                   "    SELECT anime_id"
                                   "    FROM anime_collections"
                                   "    WHERE user_id = ?"
-                                  ")",
-                                  [g.user["id"]]).fetchall()
+                                  ") ORDER BY release_title",
+                                  [g.user["id"], g.user["id"]]).fetchall()
+
+    # Create list to hold release title of each anime and a link to its AnimeNewsNetwork page
+    anime_collection = []
+
+    # Add link to each release's ANN page and add to anime_collection list
+    for anime in collection:
+        anime = dict(anime)
+
+        anime["link"] = f"https://www.animenewsnetwork.com/encyclopedia/releases.php?id={anime.get('release_id')}"
+
+        anime_collection.append(anime)
 
     # Will contain a message if user doesn't have a collection yet
     message = None
@@ -39,7 +54,7 @@ def index():
         message = ("This is where your anime collection will be displayed once "
                    "you add some shows to your collection!")
 
-    return render_template("collection/index.html", message=message, collection=collection)
+    return render_template("collection/index.html", message=message, collection=anime_collection)
 
 
 @blueprint.route("/search", methods=["GET", "POST"])
@@ -200,3 +215,38 @@ def retrieve_anime_data(database, id):
         database.commit()
 
     return releases
+
+
+@blueprint.route("/<int:release_id>/add", methods=["GET", "POST"])
+@login_required
+def add(release_id):
+    """Add anime release to anime collection."""
+
+    # Get connection to database
+    database = get_database()
+
+    # Use release_id to access anime information from database
+    anime_id = database.execute("SELECT anime_id FROM anime_releases WHERE release_id = ?",
+                                          [release_id]).fetchone()["anime_id"]
+
+    # Keep track of any errors that may occur
+    error = None
+
+    # Insert release into anime_collections database for a user's collection
+    try:
+        database.execute("INSERT INTO anime_collections (user_id, anime_id, release_id) "
+                        "VALUES (?, ?, ?)",
+                        [g.user["id"], anime_id, release_id])
+        database.commit()
+    # Display error if release has already been added to user's collection
+    except database.IntegrityError:
+        anime = database.execute("SELECT release_title FROM anime_releases WHERE release_id = ?",
+                                 [release_id]).fetchone()["release_title"]
+        error = f"{anime} is already in your collection."
+
+        flash(error)
+
+        return redirect(url_for("collection.details", id=anime_id))
+
+    # Redirect to homepage to show user's anime collection
+    return redirect(url_for("index"))

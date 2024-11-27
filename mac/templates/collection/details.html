@@ -7,7 +7,10 @@
 {% block content %}
   <ul>
     {% for release in releases %}
-      <li><a href="{{ release['link'] }}">{{ release["release_title"] }}</a></li>
+      <li>
+        <a href="{{ release['link'] }}">{{ release["release_title"] }}</a>
+        <a href="{{ url_for('collection.add', release_id=release['release_id']) }}"><button>Add to Collection</button></a>
+      </li>
     {% endfor %}
   </ul>
 {% endblock %}

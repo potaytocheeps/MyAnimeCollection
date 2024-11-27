@@ -10,7 +10,7 @@
   {% else %}
     <ul>
       {% for show in collection %}
-        <li>{{ show["title"] }}</li>
+        <li><a href="{{ show['link'] }}">{{ show["release_title"] }}</a></li>
       {% endfor %}
     </ul>
   {% endif %}
