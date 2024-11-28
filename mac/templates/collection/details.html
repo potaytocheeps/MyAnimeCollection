@@ -9,7 +9,12 @@
     {% for release in releases %}
       <li>
         <a href="{{ release['link'] }}">{{ release["release_title"] }}</a>
-        <a href="{{ url_for('collection.add', release_id=release['release_id']) }}"><button>Add to Collection</button></a>
+        <a href="{{ url_for('collection.add',
+                    release_id=release['release_id'],
+                    anime_id=release['anime_id'])
+                  }}">
+          <button>Add to Collection</button>
+        </a>
       </li>
     {% endfor %}
   </ul>

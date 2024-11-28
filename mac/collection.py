@@ -217,17 +217,17 @@ def retrieve_anime_data(database, id):
     return releases
 
 
-@blueprint.route("/<int:release_id>/add", methods=["GET", "POST"])
+@blueprint.route("/add")
 @login_required
-def add(release_id):
+def add():
     """Add anime release to anime collection."""
+
+    # Get query parameters
+    release_id = request.args.get("release_id")
+    anime_id = request.args.get("anime_id")
 
     # Get connection to database
     database = get_database()
-
-    # Use release_id to access anime information from database
-    anime_id = database.execute("SELECT anime_id FROM anime_releases WHERE release_id = ?",
-                                          [release_id]).fetchone()["anime_id"]
 
     # Keep track of any errors that may occur
     error = None
