@@ -250,3 +250,23 @@ def add():
 
     # Redirect to homepage to show user's anime collection
     return redirect(url_for("index"))
+
+
+@blueprint.route("/remove")
+@login_required
+def remove():
+    """Remove anime release from anime collection."""
+
+    # Get query parameters
+    release_id = request.args.get("release_id")
+
+    # Get connection to database
+    database = get_database()
+
+    # Remove anime release from the user's collection
+    database.execute("DELETE FROM anime_collections WHERE user_id = ? AND release_id = ?",
+                     [g.user["id"], release_id])
+    database.commit()
+
+    # Redirect back to homepage to show user's updated anime collection
+    return redirect(url_for("index"))

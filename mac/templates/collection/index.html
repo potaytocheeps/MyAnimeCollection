@@ -10,7 +10,14 @@
   {% else %}
     <ul>
       {% for show in collection %}
-        <li><a href="{{ show['link'] }}">{{ show["release_title"] }}</a></li>
+        <li>
+          <a href="{{ show['link'] }}">{{ show["release_title"] }}</a>
+          <a href="{{ url_for('collection.remove',
+                      release_id=show['release_id'])
+                    }}">
+            <button>Remove</button>
+          </a>
+        </li>
       {% endfor %}
     </ul>
   {% endif %}
