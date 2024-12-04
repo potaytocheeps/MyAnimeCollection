@@ -22,7 +22,7 @@ def index():
     database = get_database()
 
     # Get list of release titles and ids of shows that the user has added to their collection
-    collection = database.execute("SELECT release_title, release_id "
+    collection = database.execute("SELECT release_title, release_id, image "
                                   "FROM anime_releases "
                                   "WHERE release_id in ("
                                   "    SELECT release_id"
@@ -166,6 +166,9 @@ def retrieve_anime_data(database, id):
         release_id = link[link.find("=") + 1:]
         release_title = release.text
 
+        # Generate link to release's image from its ANN page
+        image = f"https://cdn.animenewsnetwork.com/thumbnails/area200x300/releases/{release_id}.jpg"
+
         # Release's disc type is always at the end of the release_title, inside
         # of parentheses. This regex extracts the type from the title
         type = re.findall("\(([^)]+)", release_title)[-1]
@@ -199,6 +202,7 @@ def retrieve_anime_data(database, id):
         # Create dict of anime data
         release_info = {"anime_id": anime_id,
                         "edition": edition,
+                        "image": image,
                         "link": link,
                         "release_date": release_date,
                         "release_id": release_id,
@@ -209,9 +213,9 @@ def retrieve_anime_data(database, id):
         releases.append(release_info)
 
         # Insert anime data into database to avoid having to call API each time
-        database.execute("INSERT INTO anime_releases (release_id, anime_id, release_title, disc_type, edition, release_date) "
-                        "VALUES (?, ?, ?, ?, ?, ?)",
-                        [release_id, anime_id, release_title, type, edition, release_date])
+        database.execute("INSERT INTO anime_releases (release_id, anime_id, release_title, disc_type, edition, release_date, image) "
+                        "VALUES (?, ?, ?, ?, ?, ?, ?)",
+                        [release_id, anime_id, release_title, type, edition, release_date, image])
         database.commit()
 
     return releases

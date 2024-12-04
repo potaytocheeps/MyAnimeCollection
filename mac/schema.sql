@@ -23,6 +23,7 @@ CREATE TABLE anime_releases (
     disc_type TEXT NOT NULL,
     edition TEXT NOT NULL DEFAULT "Standard",
     release_date TEXT NOT NULL,
+    image TEXT,
     FOREIGN KEY (anime_id) REFERENCES anime_shows (id),
     PRIMARY KEY (release_id, anime_id)
 );

@@ -8,6 +8,7 @@
   <ul>
     {% for release in releases %}
       <li>
+        <img src="{{ release['image'] }}" alt="Thumbnail of release's image">
         <a href="{{ release['link'] }}">{{ release["release_title"] }}</a>
         <a href="{{ url_for('collection.add',
                     release_id=release['release_id'],
