@@ -8,18 +8,25 @@
   {% if message %}
     <p>{{ message }}</p>
   {% else %}
-    <ul>
+    <table>
+      <tr>
+        <th>Image</th>
+        <th>Release Title</th>
+        <th>Edit Collection</th>
+      </tr>
       {% for show in collection %}
-        <li>
-          <img src="{{ show['image'] }}" alt="Thumbnail of release's image.">
-          <a href="{{ show['link'] }}">{{ show["release_title"] }}</a>
-          <a href="{{ url_for('collection.remove',
-                      release_id=show['release_id'])
-                    }}">
-            <button>Remove</button>
-          </a>
-        </li>
+        <tr>
+          <td><img src="{{ show['image'] }}" alt="Thumbnail of release's image."></td>
+          <td><a href="{{ show['link'] }}">{{ show["release_title"] }}</a></td>
+          <td>
+            <a href="{{ url_for('collection.remove',
+                        release_id=show['release_id'])
+                      }}">
+              <button>Remove</button>
+            </a>
+          </td>
+        </tr>
       {% endfor %}
-    </ul>
+    </table>
   {% endif %}
 {% endblock %}

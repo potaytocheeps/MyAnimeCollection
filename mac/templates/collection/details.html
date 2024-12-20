@@ -5,18 +5,25 @@
 {% endblock %}
 
 {% block content %}
-  <ul>
+  <table>
+    <tr>
+      <th>Image</th>
+      <th>Release Title</th>
+      <th>Edit Collection</th>
+    </tr>
     {% for release in releases %}
-      <li>
-        <img src="{{ release['image'] }}" alt="Thumbnail of release's image">
-        <a href="{{ release['link'] }}">{{ release["release_title"] }}</a>
-        <a href="{{ url_for('collection.add',
-                    release_id=release['release_id'],
-                    anime_id=release['anime_id'])
-                  }}">
-          <button>Add to Collection</button>
-        </a>
-      </li>
+      <tr>
+        <td><img src="{{ release['image'] }}" alt="Thumbnail of release's image"></td>
+        <td><a href="{{ release['link'] }}">{{ release["release_title"] }}</a></td>
+        <td>
+          <a href="{{ url_for('collection.add',
+                      release_id=release['release_id'],
+                      anime_id=release['anime_id'])
+                    }}">
+            <button>Add to Collection</button>
+          </a>
+        </td>
+      </tr>
     {% endfor %}
-  </ul>
+  </table>
 {% endblock %}
