@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block header %}
+  <h1>{% block title %}Edit: {{ release["release_title"] }}{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+    <label for="price-bought">Price Bought</label>
+    <input autocomplete="off" autofocus id="price-bought" name="price-bought" value="{{ release['price_bought'] or '' }}">
+    <label for="date-bought">Date Bought</label>
+    <input autocomplete="off" id="date-bought" name="date-bought" value="{{ release['date_bought'] or '' }}">
+    <input type="submit" value="Save">
+  </form>
+{% endblock %}

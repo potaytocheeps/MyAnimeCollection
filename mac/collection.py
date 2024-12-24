@@ -21,7 +21,7 @@ def index():
     # Get connection to database
     database = get_database()
 
-    # Get list of release titles and ids of shows that the user has added to their collection
+    # Get list of release titles, ids, and images of shows that the user has added to their collection
     collection = database.execute("SELECT release_title, release_id, image "
                                   "FROM anime_releases "
                                   "WHERE release_id in ("
@@ -35,14 +35,25 @@ def index():
                                   ") ORDER BY release_title",
                                   [g.user["user_id"], g.user["user_id"]]).fetchall()
 
-    # Create list to hold release title of each anime and a link to its AnimeNewsNetwork page
+    # Create list to hold anime information about each anime in collection
     anime_collection = []
 
-    # Add link to each release's ANN page and add to anime_collection list
+    # Add anime information for each anime and add to anime_collection list
     for anime in collection:
         anime = dict(anime)
 
+        # Add link to each release's ANN page
         anime["link"] = f"https://www.animenewsnetwork.com/encyclopedia/releases.php?id={anime.get('release_id')}"
+
+        # Get more information for each anime in collection from database
+        anime_information = database.execute("SELECT price_bought, date_bought "
+                                             "FROM anime_collections "
+                                             "WHERE release_id = ? AND user_id = ?",
+                                             [anime.get("release_id"), g.user["user_id"]]).fetchone()
+
+        # Add anime information to anime dict
+        anime["price_bought"] = anime_information["price_bought"]
+        anime["date_bought"] = anime_information["date_bought"]
 
         anime_collection.append(anime)
 
@@ -253,7 +264,54 @@ def add():
         return redirect(url_for("collection.details", id=anime_id))
 
     # Redirect to homepage to show user's anime collection
-    return redirect(url_for("index"))
+    return redirect(url_for("collection.edit", release_id=release_id))
+
+
+@blueprint.route("/<int:release_id>/edit", methods=["GET", "POST"])
+@login_required
+def edit(release_id):
+    """Edit anime information for a release added to user's collection."""
+
+    # Get connection to database
+    database = get_database()
+
+    # User reached view via a POST request
+    if request.method == "POST":
+
+        # Get user data submission
+        price_bought = request.form.get("price-bought")
+        date_bought = request.form.get("date-bought")
+
+        # Insert user submitted information for anime collection into database
+        database.execute("UPDATE anime_collections "
+                         "SET price_bought = ?, date_bought = ? "
+                         "WHERE user_id = ? AND release_id = ?",
+                         [price_bought, date_bought, g.user["user_id"], release_id])
+        database.commit()
+
+        return redirect(url_for("index"))
+
+    # Keep track of any errors that may occur
+    error = None
+
+    # Create dict to store information about anime release
+    release = {}
+
+    # Get information about anime in collection from database
+    release["release_title"] = database.execute("SELECT release_title "
+                                                "FROM anime_releases "
+                                                "WHERE release_id = ?",
+                                                [release_id]).fetchone()["release_title"]
+
+    release_info = database.execute("SELECT price_bought, date_bought "
+                                    "FROM anime_collections "
+                                    "WHERE release_id = ?",
+                                    [release_id]).fetchone()
+
+    release["price_bought"] = release_info["price_bought"]
+    release["date_bought"] = release_info["date_bought"]
+
+    return render_template("collection/edit.html", release=release)
 
 
 @blueprint.route("/remove")
