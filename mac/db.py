@@ -87,7 +87,7 @@ def import_xml(database):
         precision = anime.find("precision").text
 
         # Insert anime's data into the anime_shows table in the database
-        database.execute("INSERT INTO anime_shows (id, title, type, precision)"
+        database.execute("INSERT INTO anime_shows (anime_id, title, type, precision)"
                          " VALUES (?, ?, ?, ?)",
                          [id, title, type, precision])
         database.commit()

@@ -25,7 +25,7 @@ def load_logged_in_user():
         g.user = None
     else:
         g.user = get_database().execute(
-            "SELECT * FROM users WHERE id = ?",
+            "SELECT * FROM users WHERE user_id = ?",
             [user_id]
         ).fetchone()
 
@@ -124,7 +124,7 @@ def login():
         # Create new user session on successful login and return to index page
         if error is None:
             session.clear()
-            session["user_id"] = user["id"]
+            session["user_id"] = user["user_id"]
             return redirect(url_for("index"))
 
         # Store any errors that may have occurred during log in

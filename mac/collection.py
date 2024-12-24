@@ -33,7 +33,7 @@ def index():
                                   "    FROM anime_collections"
                                   "    WHERE user_id = ?"
                                   ") ORDER BY release_title",
-                                  [g.user["id"], g.user["id"]]).fetchall()
+                                  [g.user["user_id"], g.user["user_id"]]).fetchall()
 
     # Create list to hold release title of each anime and a link to its AnimeNewsNetwork page
     anime_collection = []
@@ -240,7 +240,7 @@ def add():
     try:
         database.execute("INSERT INTO anime_collections (user_id, anime_id, release_id) "
                         "VALUES (?, ?, ?)",
-                        [g.user["id"], anime_id, release_id])
+                        [g.user["user_id"], anime_id, release_id])
         database.commit()
     # Display error if release has already been added to user's collection
     except database.IntegrityError:
@@ -269,7 +269,7 @@ def remove():
 
     # Remove anime release from the user's collection
     database.execute("DELETE FROM anime_collections WHERE user_id = ? AND release_id = ?",
-                     [g.user["id"], release_id])
+                     [g.user["user_id"], release_id])
     database.commit()
 
     # Redirect back to homepage to show user's updated anime collection
