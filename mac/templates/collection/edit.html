@@ -10,6 +10,8 @@
     <input autocomplete="off" autofocus id="price-bought" name="price-bought" value="{{ release['price_bought'] or '' }}">
     <label for="date-bought">Date Bought</label>
     <input autocomplete="off" id="date-bought" name="date-bought" value="{{ release['date_bought'] or '' }}">
+    <label for="comment">Comment</label>
+    <textarea rows="5" cols="40" id="comment" name="comment">{{ release['comment'] or '' }}</textarea>
     <input type="submit" value="Save">
   </form>
 {% endblock %}

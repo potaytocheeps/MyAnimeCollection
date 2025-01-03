@@ -35,6 +35,7 @@ CREATE TABLE anime_collections (
     price_bought INTEGER,
     date_bought TEXT,
     date_added TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    comment TEXT,
     FOREIGN KEY (user_id) REFERENCES users (user_id),
     FOREIGN KEY (anime_id) REFERENCES anime_shows (anime_id),
     FOREIGN KEY (release_id) REFERENCES anime_releases (release_id),
