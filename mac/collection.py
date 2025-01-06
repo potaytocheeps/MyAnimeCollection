@@ -284,6 +284,9 @@ def edit(release_id):
         date_bought = request.form.get("date-bought")
         comment = request.form.get("comment")
 
+        # Format date into mm/dd/yyyy format
+        date_bought = format_date(date_bought)
+
         # Insert user submitted information for anime collection into database
         database.execute("UPDATE anime_collections "
                          "SET price_bought = ?, date_bought = ?, comment = ? "
@@ -335,3 +338,19 @@ def remove():
 
     # Redirect back to homepage to show user's updated anime collection
     return redirect(url_for("index"))
+
+
+def format_date(date):
+    """Format date from yyyy-mm-dd to mm/dd/yyyy."""
+
+    # Separate date from format of yyyy-mm-dd into list holding year, month, and day
+    date = date.split("-")
+
+    # Swap location of year from beginning to end of list
+    year = date.pop(0)
+    date.append(year)
+
+    # Join elements of list with / as a separator
+    date = "/".join(date)
+
+    return date
