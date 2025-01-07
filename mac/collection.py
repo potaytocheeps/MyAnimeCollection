@@ -141,7 +141,7 @@ def details(id):
 
     # Display message if a show has no releases
     if not releases:
-        title = database.execute("SELECT title FROM anime_shows WHERE id = ?",
+        title = database.execute("SELECT title FROM anime_shows WHERE anime_id = ?",
                                  [id]).fetchone()["title"]
 
         error = f"{title} has no releases."

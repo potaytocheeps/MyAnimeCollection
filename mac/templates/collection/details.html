@@ -5,25 +5,27 @@
 {% endblock %}
 
 {% block content %}
-  <table>
-    <tr>
-      <th>Image</th>
-      <th>Release Title</th>
-      <th>Edit Collection</th>
-    </tr>
-    {% for release in releases %}
+  {% if not get_flashed_messages() %}
+    <table>
       <tr>
-        <td><img src="{{ release['image'] }}" alt="Thumbnail of release's image"></td>
-        <td><a href="{{ release['link'] }}">{{ release["release_title"] }}</a></td>
-        <td>
-          <a href="{{ url_for('collection.add',
-                      release_id=release['release_id'],
-                      anime_id=release['anime_id'])
-                    }}">
-            <button>Add to Collection</button>
-          </a>
-        </td>
+        <th>Image</th>
+        <th>Release Title</th>
+        <th>Edit Collection</th>
       </tr>
-    {% endfor %}
-  </table>
+      {% for release in releases %}
+        <tr>
+          <td><img src="{{ release['image'] }}" alt="Thumbnail of release's image"></td>
+          <td><a href="{{ release['link'] }}">{{ release["release_title"] }}</a></td>
+          <td>
+            <a href="{{ url_for('collection.add',
+                        release_id=release['release_id'],
+                        anime_id=release['anime_id'])
+                      }}">
+              <button>Add to Collection</button>
+            </a>
+          </td>
+        </tr>
+      {% endfor %}
+    </table>
+  {% endif %}
 {% endblock %}
