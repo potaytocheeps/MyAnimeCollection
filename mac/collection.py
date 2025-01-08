@@ -46,7 +46,7 @@ def index():
         anime["link"] = f"https://www.animenewsnetwork.com/encyclopedia/releases.php?id={anime.get('release_id')}"
 
         # Get more information for each anime in collection from database
-        anime_information = database.execute("SELECT price_bought, date_bought, comment "
+        anime_information = database.execute("SELECT price_bought, date_bought, store_bought, comment "
                                              "FROM anime_collections "
                                              "WHERE release_id = ? AND user_id = ?",
                                              [anime.get("release_id"), g.user["user_id"]]).fetchone()
@@ -54,6 +54,7 @@ def index():
         # Add anime information to anime dict
         anime["price_bought"] = anime_information["price_bought"]
         anime["date_bought"] = anime_information["date_bought"]
+        anime["store_bought"] = anime_information["store_bought"]
         anime["comment"] = anime_information["comment"]
 
         anime_collection.append(anime)
@@ -282,6 +283,7 @@ def edit(release_id):
         # Get user data submission
         price_bought = request.form.get("price-bought")
         date_bought = request.form.get("date-bought")
+        store_bought = request.form.get("stores")
         comment = request.form.get("comment")
 
         # Format date into mm/dd/yyyy format
@@ -289,9 +291,9 @@ def edit(release_id):
 
         # Insert user submitted information for anime collection into database
         database.execute("UPDATE anime_collections "
-                         "SET price_bought = ?, date_bought = ?, comment = ? "
+                         "SET price_bought = ?, date_bought = ?, store_bought = ?, comment = ? "
                          "WHERE user_id = ? AND release_id = ?",
-                         [price_bought, date_bought, comment, g.user["user_id"], release_id])
+                         [price_bought, date_bought, store_bought, comment, g.user["user_id"], release_id])
         database.commit()
 
         return redirect(url_for("index"))
@@ -308,13 +310,14 @@ def edit(release_id):
                                                 "WHERE release_id = ?",
                                                 [release_id]).fetchone()["release_title"]
 
-    release_info = database.execute("SELECT price_bought, date_bought, comment "
+    release_info = database.execute("SELECT price_bought, date_bought, store_bought, comment "
                                     "FROM anime_collections "
                                     "WHERE release_id = ?",
                                     [release_id]).fetchone()
 
     release["price_bought"] = release_info["price_bought"]
     release["date_bought"] = release_info["date_bought"]
+    release["store_bought"] = release_info["store_bought"]
     release["comment"] = release_info["comment"]
 
     return render_template("collection/edit.html", release=release)

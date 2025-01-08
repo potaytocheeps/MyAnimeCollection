@@ -10,6 +10,16 @@
     <input autocomplete="off" autofocus id="price-bought" name="price-bought" value="{{ release['price_bought'] or '' }}">
     <label for="date-bought">Date Bought</label>
     <input autocomplete="off" id="date-bought" name="date-bought" type="date" value="{{ release['date_bought'] or '' }}">
+    <label for="stores">Bought from:</label>
+    <select name="stores" id="stores">
+      <option value="" selected disabled hidden>Choose here</option>
+      <option value="eBay" {{ "selected" if release["store_bought"] ==  "eBay"}}>eBay</option>
+      <option value="Crunchyroll" {{ "selected" if release["store_bought"] ==  "Crunchyroll"}}>Crunchyroll</option>
+      <option value="Funimation" {{ "selected" if release["store_bought"] ==  "Funimation"}}>Funimation</option>
+      <option value="RightStuf" {{ "selected" if release["store_bought"] ==  "RightStuf"}}>RightStuf</option>
+      <option value="Robert's Anime Corner Store" {{ "selected" if release["store_bought"] ==  "Robert's Anime Corner Store"}}>Robert's Anime Corner Store</option>
+      <option value="Sentai Filmworks" {{ "selected" if release["store_bought"] ==  "Sentai Filmworks"}}>Sentai Filmworks</option>
+    </select>
     <label for="comment">Comment</label>
     <textarea rows="5" cols="40" id="comment" name="comment">{{ release['comment'] or '' }}</textarea>
     <input type="submit" value="Save">
